@@ -38,6 +38,17 @@ const uint8_t digit2segments[] =
     0b0000111, // 7
     0b1111111, // 8
     0b1101111, // 9
+/*
+    0b1110111, // A
+    0b1111100, // b
+    0b1011000, // c
+    0b1011111, // d
+    0b1111001, // E
+    0b1110001, // F
+    0b1101111, // g
+    0b1110100, // h
+    0b1110110, // H
+*/
 };
 
 uint8_t disp_data[] =
@@ -201,6 +212,12 @@ void printDigits(uint8_t left, uint8_t right)
         setDigitSegments(i, digit);
     }
 
+    writeDispData();
+}
+
+void printSegments(uint8_t index, uint8_t segments)
+{
+    setDigitSegments(index, segments);
     writeDispData();
 }
 

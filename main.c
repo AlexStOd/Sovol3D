@@ -281,12 +281,20 @@ typedef enum
     MENU_ITEMS_COUNT
 } EMenuItem;
 
+typedef enum
+{
+    SCREEN_TEMP_HUM,
+    SCREEN_TIME,
+    SCREEN_HEATER_TEMP,
+    SCREEN_ITEMS_COUNT
+} EScreenItem;
+
 bool      curr_on_off_state = false;
 EMenuItem curr_menu_state   = MENU_TEMP;
 
-uint32_t  curr_time_left_ms = 10ul * 3600ul * 1000ul;
-bool      show_time         = false;
-uint32_t  main_screen_timer = 1;
+uint32_t    curr_time_left_ms = 10ul * 3600ul * 1000ul;
+EScreenItem curr_screen       = 0;
+uint32_t    main_screen_timer = 1;
 
 void handleStateOff(EKeyId key);
 void handleStateOn(EKeyId key);
@@ -348,8 +356,7 @@ void showTime()
 
     uint32_t time_min = curr_time_left_ms / 60000ul;
 
-//    printDigits(time_min / 60, time_min % 60);
-    printDigits(time_min / 60, getHeaterTemperature());
+    printDigits(time_min / 60, time_min % 60);
 }
 
 void showTemp()
@@ -362,7 +369,10 @@ void showTemp()
 
 void showHeaterTemp()
 {
+    clearDisp();
 
+    printDigits(getHeaterTemperature(), 0xFF);
+    printSegments(3, 0b1110110);
 }
 
 uint8_t curr_temperature = 0;
@@ -396,8 +406,13 @@ void handleTick1ms()
         main_screen_timer--;
         if (0 == main_screen_timer)
         {
-            main_screen_timer = 3000;
-            show_time = !show_time;
+            main_screen_timer = 2000;
+
+            curr_screen++;
+            if (SCREEN_ITEMS_COUNT <= curr_screen)
+            {
+                curr_screen = SCREEN_TEMP_HUM;
+            }
         }
     }
 
@@ -406,13 +421,21 @@ void handleTick1ms()
 
 void showWorkScreen()
 {
-    if (show_time)
+    switch (curr_screen)
     {
-        showTime();
-    }
-    else
-    {
-        showCurrTempHum();
+        case SCREEN_TEMP_HUM:
+            showCurrTempHum();
+            break;
+        case SCREEN_TIME:
+            showTime();
+            break;
+        case SCREEN_HEATER_TEMP:
+            showHeaterTemp();
+            break;
+        default:
+            curr_screen = SCREEN_TEMP_HUM;
+            showCurrTempHum();
+            break;
     }
 }
 

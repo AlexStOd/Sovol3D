@@ -47,9 +47,11 @@ echo " "
 
 # upload using SWIM debug interface (stm8flash from https://github.com/vdudouyt/stm8flash)
 
-stm8-objcopy -O ihex obj/STM8.elf obj/STM8.ihx
+stm8-objcopy -O ihex obj/STM8.elf obj/Sovol3D.ihx
 
-$SWIM_LOADER -c $SWIM_TOOL -w obj/STM8.ihx -p $SWIM_DEVICE
+cp obj/Sovol3D.ihx ../hex/Sovol3D.ihx
+
+$SWIM_LOADER -c $SWIM_TOOL -w obj/Sovol3D.ihx -p $SWIM_DEVICE
 
 #echo " "
 #read -p "press key to close window..."
