@@ -369,9 +369,24 @@ void showTemp()
 
 void showHeaterTemp()
 {
-    clearDisp();
+    setItemStatus(DISP_TIME,    false);
+    setItemStatus(DISP_COLON,   false);
 
-    printDigits(getHeaterTemperature(), 0xFF);
+    setItemStatus(DISP_WORK,    false);
+    setItemStatus(DISP_DEG_C,   false);
+    setItemStatus(DISP_PERCENT, false);
+
+    setItemStatus(DISP_WORK,    true);
+
+    uint8_t temp = getHeaterTemperature();
+    if (100 > temp)
+    {
+        printDigits(temp, 0xFF);
+    }
+    else
+    {
+        printDigits(temp / 10, (temp % 10 * 10));
+    }
     printSegments(3, 0b1110110);
 }
 
