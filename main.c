@@ -631,6 +631,7 @@ void main(void)
 
     if (eeprom.start_power_state)
     {
+        beep(BEEP_LONG_TIME_MS);
         switchPowerOn();
     }
     else
