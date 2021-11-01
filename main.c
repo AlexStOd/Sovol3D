@@ -779,7 +779,6 @@ void delayMs(uint16_t ms)
 void fatal(uint8_t err)
 {
     switchHeater(false);
-    switchFan(false);
 
     printErr(err);
 
