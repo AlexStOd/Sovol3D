@@ -28,7 +28,7 @@ void clearDisp();
 
 void printDigits(uint8_t left, uint8_t right);
 
-void printSegments(uint8_t index, uint8_t segments);
+void setDigitSegments(uint8_t pos, uint8_t segments);
 
 void setBacklightState(bool active);
 

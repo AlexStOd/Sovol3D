@@ -177,12 +177,12 @@ void clearDisp()
 void printDigits(uint8_t left, uint8_t right)
 {
     // clear right digits:
-    for (uint8_t j = 0; j < 6; j++)
-    {
-        disp_data[j] = 0;
-    }
+//    for (uint8_t j = 0; j < 6; j++)
+//    {
+//        disp_data[j] = 0;
+//    }
 
-    disp_data[13] = 0;
+//    disp_data[13] = 0;
 
     uint8_t digits[4];
     digits[0] = left  / 10; // left digit
@@ -190,13 +190,20 @@ void printDigits(uint8_t left, uint8_t right)
     digits[2] = right / 10;
     digits[3] = right % 10; // right digit
 
-    uint8_t stop = 4;
+    uint8_t start = 0;
+    uint8_t stop  = 4;
+
+    if (0xFF == left)
+    {
+        start = 2;
+    }
+
     if (0xFF == right)
     {
         stop = 2;
     }
 
-    for (uint8_t i = 0; i < stop; i++)
+    for (uint8_t i = start; i < stop; i++)
     {
         uint8_t digit = digits[i];
 
@@ -212,12 +219,6 @@ void printDigits(uint8_t left, uint8_t right)
         setDigitSegments(i, digit);
     }
 
-    writeDispData();
-}
-
-void printSegments(uint8_t index, uint8_t segments)
-{
-    setDigitSegments(index, segments);
     writeDispData();
 }
 
