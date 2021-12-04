@@ -290,11 +290,14 @@ typedef enum
 } EScreenItem;
 
 bool      curr_on_off_state = false;
-EMenuItem curr_menu_state   = MENU_TEMP;
+EMenuItem curr_menu_state   = MENU_WORK;
 
 uint32_t    curr_time_left_ms = 10ul * 3600ul * 1000ul;
 EScreenItem curr_screen       = 0;
 uint32_t    main_screen_timer = 1;
+uint32_t    menu_active_timer = 0;
+
+const uint32_t c_menu_active_timeout_ms = 5ul * 1000ul;
 
 void handleStateOff(EKeyId key);
 void handleStateOn(EKeyId key);
@@ -344,6 +347,7 @@ void handleStateOff(EKeyId key)
 
 void showTime()
 {
+    setItemStatus(DISP_TEMP,    false);
     setItemStatus(DISP_DEG_C,   false);
     setItemStatus(DISP_PERCENT, false);
 
@@ -378,7 +382,7 @@ void showHeaterTemp()
 
     setItemStatus(DISP_WORK,    true);
 
-    printNumberWithPreffix(0b1110110, getHeaterTemperature());
+    printNumberWithPreffix(0b1110110, getHeaterTemperature()); // 0b1110110 = "H"
 }
 
 uint8_t curr_temperature = 0;
@@ -420,6 +424,25 @@ void handleTick1ms()
                 curr_screen = SCREEN_TEMP_HUM;
             }
         }
+
+        if (0 != menu_active_timer)
+        {
+            menu_active_timer--;
+
+            if (0 == menu_active_timer)
+            {
+                curr_menu_state   = MENU_WORK;
+                main_screen_timer = 1;
+                setItemStatus(DISP_TIME,    false);
+                setItemStatus(DISP_TEMP,    false);
+                setItemStatus(DISP_COLON,   false);
+                setItemStatus(DISP_WORK,    false);
+                setItemStatus(DISP_DEG_C,   false);
+                setItemStatus(DISP_PERCENT, false);
+
+                setItemStatus(DISP_WORK,    true);
+            }
+        }
     }
 
     handleBeepTick();
@@ -458,6 +481,8 @@ void handleStateOn(EKeyId key)
             clearDisp();
 
             curr_menu_state++;
+            menu_active_timer = c_menu_active_timeout_ms;
+
             if (MENU_ITEMS_COUNT == curr_menu_state)
             {
                 curr_menu_state = 0;
@@ -484,6 +509,8 @@ void handleStateOn(EKeyId key)
             break;
 
         case KEY_UP:
+            menu_active_timer = c_menu_active_timeout_ms;
+
             switch (curr_menu_state)
             {
                 case MENU_TEMP:
