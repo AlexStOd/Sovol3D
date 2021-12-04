@@ -222,6 +222,47 @@ void printDigits(uint8_t left, uint8_t right)
     writeDispData();
 }
 
+void printNumberWithPreffix(uint8_t prefix_bitmap, uint16_t number)
+{
+
+    setDigitSegments(0, prefix_bitmap);
+
+    if (999 < number)
+    {
+        setDigitSegments(1, 0b1000000);
+        setDigitSegments(2, 0b1000000);
+        setDigitSegments(3, 0b1000000);
+    }
+    else
+    {
+        uint8_t digit0 = number / 100;
+        uint8_t digit1 = (number % 100) / 10;
+        uint8_t digit2 = (number % 10);
+
+        if (0 == digit0)
+        {
+            setDigitSegments(1, 0b0000000);
+        }
+        else
+        {
+            setDigitSegments(1, digit2segments[digit0]);
+        }
+
+        if ((0 == digit0) && (0 == digit1))
+        {
+            setDigitSegments(2, 0xb0000000);
+        }
+        else
+        {
+            setDigitSegments(2, digit2segments[digit1]);
+        }
+
+        setDigitSegments(3, digit2segments[digit2]);
+    }
+
+    writeDispData();
+}
+
 void printErr(uint8_t err)
 {
     clearDisp();

@@ -378,19 +378,7 @@ void showHeaterTemp()
 
     setItemStatus(DISP_WORK,    true);
 
-    uint8_t temp = getHeaterTemperature();
-
-    setDigitSegments(0, 0b1110110);
-    setDigitSegments(1, 0b0000000);
-
-    if (100 > temp)
-    {
-        printDigits(0xFF, temp);
-    }
-    else
-    {
-        printDigits(temp / 100, (temp % 100));
-    }
+    printNumberWithPreffix(0b1110110, getHeaterTemperature());
 }
 
 uint8_t curr_temperature = 0;

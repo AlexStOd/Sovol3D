@@ -27,6 +27,7 @@ void initTM1621C(GPIO_TypeDef* port_name_cs,      GPIO_Pin_TypeDef port_pin_cs,
 void clearDisp();
 
 void printDigits(uint8_t left, uint8_t right);
+void printNumberWithPreffix(uint8_t prefix_bitmap, uint16_t number);
 
 void setDigitSegments(uint8_t pos, uint8_t segments);
 
